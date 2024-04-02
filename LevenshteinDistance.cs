@@ -43,11 +43,12 @@ namespace PerformanceDemo.Levenshtein
 
         static int CalculateLevenshteinDistance(string source, string target)
         {
-            source = source.Trim();
-            target = target.Trim();
+            source = source.Trim(); // Heap allocation here
+            target = target.Trim(); // Heap allocation here
             int sourceLength = source.Length;
             int targetLength = target.Length;
-            int[,] distanceMatrix = new int[sourceLength + 1, targetLength + 1];
+
+            int[,] distanceMatrix = new int[sourceLength + 1, targetLength + 1]; // Heap allocation here
 
             // Initialize the matrix's first column and first row.  
             for (int i = 0; i <= sourceLength; distanceMatrix[i, 0] = i++) { }
@@ -79,7 +80,7 @@ namespace PerformanceDemo.Levenshtein
             int sourceLength = cleansedSource.Length;
             int targetLength = cleansedTarget.Length;
 
-            int[,] distanceMatrix = new int[sourceLength + 1, targetLength + 1];
+            int[,] distanceMatrix = new int[sourceLength + 1, targetLength + 1]; // Heap allocation here
 
             // Initialize the matrix's first column and first row.  
             for (int i = 0; i <= sourceLength; distanceMatrix[i, 0] = i++) { }
