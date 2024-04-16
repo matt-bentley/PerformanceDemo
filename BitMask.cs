@@ -1,39 +1,39 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-namespace PerformanceDemo.Levenshtein
+namespace PerformanceDemo
 {
     [Flags]
-    public enum UserPermissions : int
-    {
-        None = 0,
-        Read = 1 << 1, //2
-        Write = 1 << 2, //4
-        Delete = 1 << 3 // 8,
+    public enum UserPermissions : byte
+    {                      //   Binary
+        None = 0,          //   00000000
+        Read = 1,          //   00000001
+        Write = 2,         //   00000010
+        Delete = 4         //   00000100
     }
 
     [MemoryDiagnoser]
     [Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.FastestToSlowest)]
-    public class BitMask
+    public class Bitmask
     {
         [Benchmark]
-        public void BitMask_WithByteArray()
+        public void BitMask_WithEnumArray()
         {
             var userPermissions = new UserPermissions[] { UserPermissions.Read, UserPermissions.Write };
-            var canWrite = userPermissions.Contains(UserPermissions.Read);
+            var canWrite = userPermissions.Contains(UserPermissions.Write);
+        }
+
+        [Benchmark]
+        public void BitMask_WithBitmask()
+        {
+            var userPermissions = 1 | 2;               //  00000011
+            var canWrite = (2 & userPermissions) == 2; //  true
         }
 
         [Benchmark]
         public void BitMask_WithFlags()
         {
-            var userPermissions = UserPermissions.Read | UserPermissions.Write; // 0,1,1,0
-            var canWrite = userPermissions.HasFlag(UserPermissions.Write);
-        }
-
-        [Benchmark]
-        public void BitMask_WithBitMask()
-        {
-            var userPermissions = 2 | 4; // 0,1,1,0
-            var canWrite = (4 & userPermissions) == 4;
+            var userPermissions = UserPermissions.Read | UserPermissions.Write; //   00000011
+            var canWrite = userPermissions.HasFlag(UserPermissions.Write);      //   true
         }
     }
 }
